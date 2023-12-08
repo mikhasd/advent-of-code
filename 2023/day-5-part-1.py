@@ -5,20 +5,6 @@ from helper import load_input_lines
 MAP_START = re.compile(r'^(?P<source>\w+)-to-(?P<destination>\w+) map:$')
 MAPPING_LINE = re.compile(r'^(?P<dest_start>\d+) (?P<src_start>\d+) (?P<length>\d+)$')
 
-class KeyAndCoord:
-    def __init__(self, key: str, coord: int) -> None:
-        self.key = key
-        self.coord = coord
-
-    def __eq__(self, other: object) -> bool:
-        return self.key == other.key and self.coord == other.coord
-    
-    def __hash__(self) -> int:
-        return hash((self.key, self.coord))
-    
-    def __repr__(self) -> str:
-        return f'{self.key}:{self.coord}'
-
 class Mapping:
     dest_start: int
     dest_type: str
