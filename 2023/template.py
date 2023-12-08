@@ -1,7 +1,6 @@
 #import re
 #from typing import Generator
-
-puzzle_input = ''''''
+#from helper import load_input, load_input_lines
 
 
 def solve():
