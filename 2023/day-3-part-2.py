@@ -230,7 +230,7 @@ class EngineSchematic:
         for x in range(p.x - 1, p.x + p.length + 1):
             for y in [p.y - 1, p.y + 1]:
                 if self.has_gear_at(x, y):
-                    return gears.add(Gear(x, y))
+                    gears.add(Gear(x, y))
         
         return gears
 
@@ -243,13 +243,13 @@ def solve():
     
     for p in schematic.parts():
         gears = schematic.find_adjacent_gears(p)
-
-        for gear in gears:
-            gear_parts = gear_to_parts[gear]
-            if gear_parts:                
-                gear_parts.append(p)
-            else:
-                gear_to_parts[gear] = [p]
+        if gears:
+            for gear in gears:
+                gear_parts = gear_to_parts.get(gear)
+                if gear_parts:
+                    gear_parts.append(p)
+                else:
+                    gear_to_parts[gear] = [p]
 
     result = 0
 
