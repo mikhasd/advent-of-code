@@ -41,10 +41,10 @@ def determine_hand_type(cards: str) -> HandType:
     jokers = 0
     hand_type = HAND_TYPE_HIGH_CARD
     for card, count in grouped_cards.items():
-        if card == 'J':
-            jokers = count
-        elif count == 5:
+        if count == 5:
             return HAND_TYPE_FIVE_OF_KIND
+        elif card == 'J':
+            jokers = count
         elif count == 4:
             hand_type = HAND_TYPE_FOUR_OF_KIND
         elif count == 3:
@@ -52,18 +52,18 @@ def determine_hand_type(cards: str) -> HandType:
         elif count == 2:
             pairs += 1
 
-    if jokers == 5:
+    if jokers == 4:
         return HAND_TYPE_FIVE_OF_KIND
-    elif jokers == 4:
-        return HAND_TYPE_FOUR_OF_KIND
     elif jokers == 3:
         if pairs:
             return HAND_TYPE_FIVE_OF_KIND
         else:
             return HAND_TYPE_FOUR_OF_KIND
     elif jokers == 2:
-        if pairs or has_three_of_kind:
-            return HAND_TYPE_FULL_HOUSE
+        if has_three_of_kind:
+            return HAND_TYPE_FIVE_OF_KIND
+        elif pairs:
+            return HAND_TYPE_FOUR_OF_KIND
         else:
             return HAND_TYPE_THREE_OF_KIND
     elif jokers == 1:
