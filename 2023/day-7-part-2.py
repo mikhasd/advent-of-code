@@ -38,15 +38,48 @@ def determine_hand_type(cards: str) -> HandType:
     grouped_cards = reduce(grouping, sorted(cards), {})
     pairs = 0
     has_three_of_kind = False
-    for count in grouped_cards.values():
-        if count == 5:
+    jokers = 0
+    hand_type = HAND_TYPE_HIGH_CARD
+    for card, count in grouped_cards.items():
+        if card == 'J':
+            jokers = count
+        elif count == 5:
             return HAND_TYPE_FIVE_OF_KIND
         elif count == 4:
-            return HAND_TYPE_FOUR_OF_KIND
+            hand_type = HAND_TYPE_FOUR_OF_KIND
         elif count == 3:
             has_three_of_kind = True
         elif count == 2:
             pairs += 1
+
+    if jokers == 5:
+        return HAND_TYPE_FIVE_OF_KIND
+    elif jokers == 4:
+        return HAND_TYPE_FOUR_OF_KIND
+    elif jokers == 3:
+        if pairs:
+            return HAND_TYPE_FIVE_OF_KIND
+        else:
+            return HAND_TYPE_FOUR_OF_KIND
+    elif jokers == 2:
+        if pairs or has_three_of_kind:
+            return HAND_TYPE_FULL_HOUSE
+        else:
+            return HAND_TYPE_THREE_OF_KIND
+    elif jokers == 1:
+        if hand_type == HAND_TYPE_FOUR_OF_KIND:
+            return HAND_TYPE_FIVE_OF_KIND
+        elif has_three_of_kind:
+            return HAND_TYPE_FOUR_OF_KIND
+        elif pairs == 2:
+            return HAND_TYPE_FULL_HOUSE
+        elif pairs == 1:
+            return HAND_TYPE_THREE_OF_KIND
+        else:
+            return HAND_TYPE_ONE_PAIR
+
+    if hand_type == HAND_TYPE_FOUR_OF_KIND:
+        return HAND_TYPE_FOUR_OF_KIND
     
     if has_three_of_kind:
         if pairs:
@@ -74,7 +107,17 @@ class HandAndScore:
         self.score = score
 
     def __repr__(self) -> str:
-        return f'Hand[cards: {self.cards}, type: {self.type}]'
+        type_str = ({
+            HAND_TYPE_ONE_PAIR: 'Pair',
+            HAND_TYPE_TWO_PAIR: '2x Pair',
+            HAND_TYPE_THREE_OF_KIND: '3X',
+            HAND_TYPE_FULL_HOUSE: 'Full House',
+            HAND_TYPE_FOUR_OF_KIND: '4X',
+            HAND_TYPE_FIVE_OF_KIND: '5X'
+        }).get(self.type, 'High Card')
+        joker = '*' if 'J' in self.cards else ''
+            
+        return f'Hand[cards: {self.cards}{joker}, type: {type_str}]'
     
     def __cmp__(self, other) -> int:
         if self.type != other.type:
